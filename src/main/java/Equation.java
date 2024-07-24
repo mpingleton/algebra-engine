@@ -15,4 +15,14 @@ public class Equation {
         leftSide = new Expression(equation.leftSide);
         rightSide = new Expression(equation.rightSide);
     }
+
+    public String toString() {
+        StringBuilder returnString = new StringBuilder();
+
+        returnString.append(leftSide.toString());
+        returnString.append("=");
+        returnString.append(rightSide.toString());
+
+        return returnString.toString();
+    }
 }

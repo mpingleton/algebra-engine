@@ -44,4 +44,42 @@ public class Particle {
             subExpressions.add(new Expression(particle.subExpressions.get(i)));
         }
     }
+
+    public String toString() {
+        StringBuilder returnString = new StringBuilder();
+
+        if (op == OP_POW) {
+            returnString.append("^");
+        }
+        else if (op == OP_MUL) {
+            returnString.append("*");
+        }
+        else if (op == OP_DIV) {
+            returnString.append("/");
+        }
+        else if (op == OP_ADD) {
+            returnString.append("+");
+        }
+        else if (op == OP_SUB) {
+            returnString.append("-");
+        }
+
+        returnString.append(value);
+
+        if (subExpressions.size() > 0) {
+            returnString.append("(");
+
+            for (int subExpressionIndex = 0; subExpressionIndex < subExpressions.size(); subExpressionIndex++) {
+                returnString.append(subExpressions.get(subExpressionIndex).toString());
+
+                if (subExpressionIndex < subExpressions.size() - 1) {
+                    returnString.append(", ");
+                }
+            }
+
+            returnString.append(")");
+        }
+
+        return returnString.toString();
+    }
 }

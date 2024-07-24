@@ -20,4 +20,14 @@ public class Expression {
             particles.add(new Particle(expression.particles.get(i)));
         }
     }
+
+    public String toString() {
+        StringBuilder returnString = new StringBuilder();
+
+        for (int i = 0; i < particles.size(); i++) {
+            returnString.append(particles.get(i).toString());
+        }
+
+        return returnString.toString();
+    }
 }
