@@ -2,6 +2,9 @@
  * Created 23-Jul-2024
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Particle {
 
     public static int OP_NULL = 0;
@@ -20,12 +23,14 @@ public class Particle {
     protected int valueType;
     protected String value;
     protected float parsedValue;
+    protected List<Expression> subExpressions;
 
     public Particle() {
         op = OP_NULL;
         valueType = VALUE_TYPE_NULL;
         value = "";
         parsedValue = Float.NaN;
+        subExpressions = new ArrayList<>();
     }
 
     public Particle(Particle particle) {
@@ -33,5 +38,10 @@ public class Particle {
         valueType = particle.valueType;
         value = particle.value;
         parsedValue = particle.parsedValue;
+        subExpressions = new ArrayList<>();
+
+        for (int i = 0; i < particle.subExpressions.size(); i++) {
+            subExpressions.add(new Expression(particle.subExpressions.get(i)));
+        }
     }
 }
