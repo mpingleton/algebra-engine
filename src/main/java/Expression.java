@@ -21,6 +21,17 @@ public class Expression {
         }
     }
 
+    public Expression replaceVariable(VariableBundle bundle) {
+        Expression newExpression = new Expression();
+
+        for (int i = 0; i < particles.size(); i++) {
+            Particle particle = particles.get(i);
+            newExpression.particles.add(particle.replaceVariable(bundle));
+        }
+
+        return newExpression;
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
 

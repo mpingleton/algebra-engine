@@ -45,6 +45,22 @@ public class Particle {
         }
     }
 
+    public Particle replaceVariable(VariableBundle bundle) {
+        Particle newParticle = new Particle(this);
+
+        if (newParticle.valueType == VALUE_TYPE_VARIABLE) {
+            float value = bundle.getValue(newParticle.value);
+
+            if (!Float.isNaN(value)) {
+                newParticle.valueType = VALUE_TYPE_CONSTANT;
+                newParticle.parsedValue = value;
+                newParticle.value = String.valueOf(value);
+            }
+        }
+
+        return newParticle;
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
 

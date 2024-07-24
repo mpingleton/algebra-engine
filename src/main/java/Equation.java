@@ -16,6 +16,15 @@ public class Equation {
         rightSide = new Expression(equation.rightSide);
     }
 
+    public Equation replaceVariable(VariableBundle bundle) {
+        Equation newEquation = new Equation();
+
+        newEquation.leftSide = leftSide.replaceVariable(bundle);
+        newEquation.rightSide = rightSide.replaceVariable(bundle);
+
+        return newEquation;
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
 
