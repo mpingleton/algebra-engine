@@ -12,4 +12,12 @@ public class Expression {
     public Expression() {
         particles = new ArrayList<>();
     }
+
+    public Expression(Expression expression) {
+        particles = new ArrayList<>();
+
+        for (int i = 0; i < expression.particles.size(); i++) {
+            particles.add(new Particle(expression.particles.get(i)));
+        }
+    }
 }

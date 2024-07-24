@@ -28,5 +28,10 @@ public class Particle {
         parsedValue = Float.NaN;
     }
 
-
+    public Particle(Particle particle) {
+        op = particle.op;
+        valueType = particle.valueType;
+        value = particle.value;
+        parsedValue = particle.parsedValue;
+    }
 }
