@@ -25,6 +25,25 @@ public class Equation {
         return newEquation;
     }
 
+    public int parseEquationFromString(String input) {
+        int index = 0;
+
+        leftSide = new Expression();
+        rightSide = new Expression();
+
+        index = leftSide.parseExpressionFromString(input, index);
+
+        if (input.charAt(index) == '=') {
+            index++;
+        } else {
+            return index;
+        }
+
+        index = rightSide.parseExpressionFromString(input, index);
+
+        return index;
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
 

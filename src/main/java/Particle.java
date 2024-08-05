@@ -10,9 +10,10 @@ public class Particle {
     public static int OP_NULL = 0;
     public static int OP_POW = 1;
     public static int OP_MUL = 2;
-    public static int OP_DIV = 3;
-    public static int OP_ADD = 4;
-    public static int OP_SUB = 5;
+    public static int OP_IMP = 3;
+    public static int OP_DIV = 4;
+    public static int OP_ADD = 5;
+    public static int OP_SUB = 6;
 
     public static int VALUE_TYPE_NULL = 0;
     public static int VALUE_TYPE_CONSTANT = 1;
@@ -59,6 +60,124 @@ public class Particle {
         }
 
         return newParticle;
+    }
+
+    public int parseParticleFromString(String input, int offset) {
+        int index = offset;
+
+        while (index < input.length()) {
+            char c = input.charAt(index);
+
+            if (Character.isWhitespace(c)) {
+                index++;
+            }
+            else if (c == '=') {
+                return index;
+            }
+            else if (c == '^') {
+                if (op == OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    op = OP_POW;
+                } else if (op != OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    // TODO: Throw syntax error.
+                } else {
+                    return index;
+                }
+
+                index++;
+            }
+            else if (c == '*') {
+                if (op == OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    op = OP_MUL;
+                } else if (op != OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    // TODO: Throw syntax error.
+                } else {
+                    return index;
+                }
+
+                index++;
+            }
+            else if (c == '/') {
+                if (op == OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    op = OP_DIV;
+                } else if (op != OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    // TODO: Throw syntax error.
+                } else {
+                    return index;
+                }
+
+                index++;
+            }
+            else if (c == '+') {
+                if (op == OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    op = OP_ADD;
+                } else if (op != OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    // TODO: Throw syntax error.
+                } else {
+                    return index;
+                }
+
+                index++;
+            }
+            else if (c == '-') {
+                if (op == OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    op = OP_SUB;
+                } else if (op != OP_NULL && valueType == VALUE_TYPE_NULL) {
+                    // TODO: Negative value?  Make a isNegative member to this class.
+                } else {
+                    return index;
+                }
+
+                index++;
+            }
+            else if (c == '(') {
+                // This
+
+                // Go one lever deeper.
+                // Call the parseExpressionFromString(input, index + 1) at the next string position.
+            }
+            else if (c == ')') {
+                // Stop. Return from this function.
+            }
+            else if (Character.isDigit(c) || c == '.') {
+                if (valueType == VALUE_TYPE_NULL) {
+                    valueType = VALUE_TYPE_CONSTANT;
+                    value = "" + c;
+                    parsedValue = Float.parseFloat(value);
+                }
+                else if (valueType == VALUE_TYPE_VARIABLE) {
+                    // TODO: Throw syntax error or implicitly multiply?
+                }
+                else if (valueType == VALUE_TYPE_CONSTANT) {
+                    value += c;
+                    parsedValue = Float.parseFloat(value);
+                }
+
+                index++;
+            }
+            else if (Character.isLetter(c)) {
+                if (valueType == VALUE_TYPE_NULL) {
+                    if (op == OP_NULL) {
+                        op = OP_IMP;
+                    }
+
+                    valueType = VALUE_TYPE_VARIABLE;
+                    value = "" + c;
+                }
+                else if (valueType == VALUE_TYPE_VARIABLE) {
+                    value += c;
+                }
+                else if (valueType == VALUE_TYPE_CONSTANT) {
+                    return index;
+                }
+
+                index++;
+            }
+            else {
+                // TODO: Throw syntax error.
+            }
+        }
+
+        return index;
     }
 
     public String toString() {

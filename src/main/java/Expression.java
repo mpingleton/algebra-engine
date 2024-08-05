@@ -32,6 +32,27 @@ public class Expression {
         return newExpression;
     }
 
+    public int parseExpressionFromString(String input, int offset) {
+        int index = offset;
+
+        while (index < input.length()) {
+            char c = input.charAt(index);
+
+            if (c == '=') {
+                return index;
+            }
+
+            Particle newParticle = new Particle();
+            index = newParticle.parseParticleFromString(input, index);
+
+            if (newParticle.valueType != Particle.VALUE_TYPE_NULL) {
+                particles.add(newParticle);
+            }
+        }
+
+        return index;
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
 
