@@ -10,14 +10,25 @@ public class BinaryOp {
     public static final char MOD = '%';
     public static final char POW = '^';
 
+    public static int operatorPrecedence(char op) {
+        if (op == ADD || op == SUB)
+            return 2;
+        else if (op == MUL || op == DIV || op == MOD)
+            return 3;
+        else if (op == POW)
+            return 4;
+        else
+            return -1;
+    }
+
     private char o;
     private double lVal, rVal;
     private BinaryOp lOp, rOp;
 
     public BinaryOp() {
         this.o = NULL;
-        this.lVal = 0.0;
-        this.rVal = 0.0;
+        this.lVal = Double.NaN;
+        this.rVal = Double.NaN;
         this.lOp = null;
         this.rOp = null;
     }
@@ -52,6 +63,32 @@ public class BinaryOp {
         this.rVal = Double.NaN;
         this.lOp = lValue;
         this.rOp = rValue;
+    }
+
+    public boolean isOpInitialized() {
+        return (o != NULL);
+    }
+
+    public boolean isLValInitialized() {
+        return !(lOp == null && Double.isNaN(lVal));
+    }
+
+    public boolean isRValInitialized() {
+        return !(rOp == null && Double.isNaN(rVal));
+    }
+
+    public void initOp(char opCode) {
+        o = opCode;
+    }
+
+    public void initLVal(double lValue) {
+        lVal = lValue;
+        lOp = null;
+    }
+
+    public void initRVal(double rValue) {
+        rVal = rValue;
+        rOp = null;
     }
 
     public double evaluate() {
