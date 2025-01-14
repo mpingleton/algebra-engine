@@ -15,7 +15,18 @@ public class Tokenizer {
         this.tokens = new ArrayList<>();
     }
 
-    int tokenize() {
+    public Token getToken(int index) {
+        if (index >= this.tokens.size())
+            return null;
+
+        return this.tokens.get(index);
+    }
+
+    public int numberTokens() {
+        return this.tokens.size();
+    }
+
+    public int tokenize() {
         int currentIndex = 0;
 
         while (currentIndex < input.length()) {
