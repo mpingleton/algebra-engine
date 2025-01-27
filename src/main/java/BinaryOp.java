@@ -86,9 +86,21 @@ public class BinaryOp {
         lOp = null;
     }
 
+    public void initLVal(String lValue) {
+        // TODO
+
+        lVal = 1.0; // This is temporary
+    }
+
     public void initRVal(double rValue) {
         rVal = rValue;
         rOp = null;
+    }
+
+    public void initRVal(String rValue) {
+        // TODO
+
+        rVal = 1.0; // This is temporary.
     }
 
     public double evaluate() {
