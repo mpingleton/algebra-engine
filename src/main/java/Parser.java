@@ -13,71 +13,88 @@ public class Parser {
         this.output = new BinaryOp();
     }
 
-    public int parse(int fromIndex) {
-        if (input == null)
-            return -1;
-
+    public int recParse(int fromIndex, BinaryOp parentOp, boolean first) {
         int currentIndex = fromIndex;
-        while (currentIndex < input.numberTokens()) {
-            Token t = input.getToken(currentIndex);
 
-            switch (t.type) {
-                case Token.WHITESPACE: {
+        // TODO: Find the L-Value, but only if (first).
+        int indexLVal = -1;
+        if (first) {
+            while (currentIndex < input.numberTokens()) {
+                Token t = input.getToken(currentIndex);
+
+                if (t.type == Token.CONSTANT) {
+                    indexLVal = currentIndex;
                     currentIndex++;
-                    break;
-                }
-                case Token.OPERATOR: {
-                    if (t.str.length() != 1)
-                        return -1;
-                    else if (output.isOpInitialized()) {
-                        if (!output.isLValInitialized() || !output.isRValInitialized())
-                            return -1;
-
-                        // TODO: Based on PEMDAS, figure out where the new OP should go.
-                        BinaryOp newOp = new BinaryOp(t.str.charAt(0), output, Double.NaN);
-                        output = newOp;
-                    }
-                    else
-                        output.initOp(t.str.charAt(0));
-
-                    currentIndex++;
-                    break;
-                }
-                case Token.DELIMITER: {
-                    // TODO: If it's an open parenthese, recursive call?
-                    // TODO: If it's a closing parenthese, return from recursive call?
-
-                    break;
-                }
-                case Token.CONSTANT: {
                     double v = Double.parseDouble(t.str);
-                    if (!output.isLValInitialized())
-                        output.initLVal(v);
-                    else if (!output.isRValInitialized())
-                        output.initRVal(v);
-                    else
-                        return -1;
-
-                    currentIndex++;
+                    parentOp.initLVal(v);
                     break;
-                }
-                case Token.IDENTIFIER: {
-                    if (!output.isLValInitialized())
-                        output.initLVal(t.str);
-                    else if(!output.isRValInitialized())
-                        output.initRVal(t.str);
-                    else
-                        return -1;
-
+                } else if (t.type == Token.IDENTIFIER) {
+                    indexLVal = currentIndex;
                     currentIndex++;
+                    parentOp.initLVal(t.str);
                     break;
-                }
-                default: {
+                } else if (t.type == Token.WHITESPACE) {
+                    currentIndex++;
+                } else {
                     return -1;
                 }
             }
         }
 
+        // TODO: Find the Operator
+        int indexOp = -1;
+        while (currentIndex < input.numberTokens()) {
+            Token t = input.getToken(currentIndex);
+
+            if (t.type == Token.OPERATOR) {
+                indexOp = currentIndex;
+                currentIndex++;
+                parentOp.initOp(t.str.charAt(0));
+                break;
+            } else if (t.type == Token.WHITESPACE) {
+                currentIndex++;
+            } else {
+                return -1;
+            }
+        }
+
+        // TODO: Find the R-Value
+        int indexRVal = -1;
+        while (currentIndex < input.numberTokens()) {
+            Token t = input.getToken(currentIndex);
+
+            if (t.type == Token.CONSTANT) {
+                indexRVal = currentIndex;
+                currentIndex++;
+                double v = Double.parseDouble(t.str);
+                parentOp.initRVal(v);
+                break;
+            } else if (t.type == Token.IDENTIFIER) {
+                indexRVal = currentIndex;
+                currentIndex++;
+                parentOp.initRVal(t.str);
+                break;
+            } else if (t.type == Token.WHITESPACE) {
+                currentIndex++;
+            } else {
+                return -1;
+            }
+        }
+
+        // TODO: Start recursively parsing the next op.
+        if (currentIndex < input.numberTokens()) {
+            BinaryOp nextOp = new BinaryOp();
+            int nextParse = recParse(currentIndex, nextOp, false);
+            if (nextParse > currentIndex) {
+                parentOp.swap(nextOp);
+                parentOp.initLVal(nextOp);
+            }
+        }
+
         return currentIndex;
+    }
+
+    int parse() {
+        return recParse(0, output, true);
     }
 }
