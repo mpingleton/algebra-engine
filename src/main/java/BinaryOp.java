@@ -85,6 +85,11 @@ public class BinaryOp {
         other.rOp = rOpTmp;
     }
 
+    public void initLValueWithOtherRValue(BinaryOp other) {
+        this.lVal = other.rVal;
+        this.lOp = other.rOp;
+    }
+
     public boolean isOpInitialized() {
         return (o != NULL);
     }
@@ -113,6 +118,7 @@ public class BinaryOp {
     }
 
     public void initLVal(BinaryOp lValue) {
+        lVal = Double.NaN;
         lOp = lValue;
     }
 
@@ -128,6 +134,7 @@ public class BinaryOp {
     }
 
     public void initRVal(BinaryOp rValue) {
+        rVal = Double.NaN;
         rOp = rValue;
     }
 
