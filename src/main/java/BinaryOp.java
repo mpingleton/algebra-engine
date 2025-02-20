@@ -85,6 +85,10 @@ public class BinaryOp {
         other.rOp = rOpTmp;
     }
 
+    public boolean takesPrecedenceOver(BinaryOp other) {
+        return (operatorPrecedence(o) > operatorPrecedence(other.o));
+    }
+
     public void initLValueWithOtherRValue(BinaryOp other) {
         this.lVal = other.rVal;
         this.lOp = other.rOp;
