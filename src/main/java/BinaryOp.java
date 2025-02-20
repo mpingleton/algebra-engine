@@ -145,6 +145,20 @@ public class BinaryOp {
         rOp = rValue;
     }
 
+    public void addNext(BinaryOp next) {
+        if (next.takesPrecedenceOver(this)) {
+            if (rOp == null) {
+                next.initLValueWithOtherRValue(this);
+                initRVal(next);
+            } else {
+                rOp.addNext(next);
+            }
+        } else {
+            swap(next);
+            initLVal(next);
+        }
+    }
+
     public double evaluate() {
         if (lOp != null)
             lVal = lOp.evaluate();
