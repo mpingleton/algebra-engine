@@ -65,6 +65,26 @@ public class BinaryOp {
         this.rOp = rValue;
     }
 
+    public void swap(BinaryOp other) {
+        char oTmp = this.o;
+        double lValTmp = this.lVal;
+        double rValTmp = this.rVal;
+        BinaryOp lOpTmp = this.lOp;
+        BinaryOp rOpTmp = this.rOp;
+
+        this.o = other.o;
+        this.lVal = other.lVal;
+        this.rVal = other.rVal;
+        this.lOp = other.lOp;
+        this.rOp = other.rOp;
+
+        other.o = oTmp;
+        other.lVal = lValTmp;
+        other.rVal = rValTmp;
+        other.lOp = lOpTmp;
+        other.rOp = rOpTmp;
+    }
+
     public boolean isOpInitialized() {
         return (o != NULL);
     }
@@ -92,6 +112,10 @@ public class BinaryOp {
         lVal = 1.0; // This is temporary
     }
 
+    public void initLVal(BinaryOp lValue) {
+        lOp = lValue;
+    }
+
     public void initRVal(double rValue) {
         rVal = rValue;
         rOp = null;
@@ -101,6 +125,10 @@ public class BinaryOp {
         // TODO
 
         rVal = 1.0; // This is temporary.
+    }
+
+    public void initRVal(BinaryOp rValue) {
+        rOp = rValue;
     }
 
     public double evaluate() {
