@@ -9,9 +9,12 @@ public class BinaryOp {
     public static final char DIV = '/';
     public static final char MOD = '%';
     public static final char POW = '^';
+    public static final char EQU = '=';
 
     public static int operatorPrecedence(char op) {
-        if (op == ADD || op == SUB)
+        if (op == EQU)
+            return 1;
+        else if (op == ADD || op == SUB)
             return 2;
         else if (op == MUL || op == DIV || op == MOD)
             return 3;
