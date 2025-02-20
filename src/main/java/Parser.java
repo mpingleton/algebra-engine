@@ -13,6 +13,53 @@ public class Parser {
         this.output = new BinaryOp();
     }
 
+    public int nextOp(int fromIndex) {
+        BinaryOp next = new BinaryOp();
+
+        int currentIndex = fromIndex;
+
+        int indexOp = -1;
+        while (currentIndex < input.numberTokens()) {
+            Token t = input.getToken(currentIndex);
+
+            if (t.type == Token.OPERATOR) {
+                indexOp = currentIndex;
+                currentIndex++;
+                next.initOp(t.str.charAt(0));
+                break;
+            } else if (t.type == Token.WHITESPACE) {
+                currentIndex++;
+            } else {
+                return -1;
+            }
+        }
+
+        int indexRVal = -1;
+        while (currentIndex < input.numberTokens()) {
+            Token t = input.getToken(currentIndex);
+
+            if (t.type == Token.CONSTANT) {
+                indexRVal = currentIndex;
+                currentIndex++;
+                double v = Double.parseDouble(t.str);
+                next.initRVal(v);
+                break;
+            } else if (t.type == Token.IDENTIFIER) {
+                indexRVal = currentIndex;
+                currentIndex++;
+                next.initRVal(t.str);
+                break;
+            } else if (t.type == Token.WHITESPACE) {
+                currentIndex++;
+            } else {
+                return -1;
+            }
+        }
+
+        output.addNext(next);
+        return currentIndex;
+    }
+
     public int recParse(int fromIndex, BinaryOp parentOp, boolean first) {
         int currentIndex = fromIndex;
 
@@ -81,14 +128,9 @@ public class Parser {
             }
         }
 
-        // TODO: Start recursively parsing the next op.
-        if (currentIndex < input.numberTokens()) {
-            BinaryOp nextOp = new BinaryOp();
-            int nextParse = recParse(currentIndex, nextOp, false);
-            if (nextParse > currentIndex) {
-                parentOp.swap(nextOp);
-                parentOp.initLVal(nextOp);
-            }
+        while (currentIndex < input.numberTokens()) {
+            int nextIndex = nextOp(currentIndex);
+            currentIndex = nextIndex;
         }
 
         return currentIndex;

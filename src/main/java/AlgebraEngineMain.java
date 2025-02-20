@@ -7,8 +7,8 @@ public class AlgebraEngineMain {
     public static void main(String[] args) {
         System.out.println("Token parser");
 
-        Tokenizer t1 = new Tokenizer("2*x+4");
-        Tokenizer t2 = new Tokenizer("2+x*4");
+        Tokenizer t1 = new Tokenizer("2*3+4*5^2");
+        Tokenizer t2 = new Tokenizer("2+3*4+5");
         t1.tokenize();
         t2.tokenize();
         System.out.println(t1);
