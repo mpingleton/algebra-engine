@@ -1,142 +1,90 @@
 public class Parser {
 
+    private int currentIndex;
     private Tokenizer input;
-    public BinaryOp output;
+    public Value output;
 
     public Parser() {
+        this.currentIndex = 0;
         this.input = null;
         this.output = null;
     }
 
     public Parser(Tokenizer input) {
+        this.currentIndex = 0;
         this.input = input;
-        this.output = new BinaryOp();
+        this.output = null;
     }
 
-    public int nextOp(int fromIndex) {
-        BinaryOp next = new BinaryOp();
-
-        int currentIndex = fromIndex;
-
-        int indexOp = -1;
-        while (currentIndex < input.numberTokens()) {
-            Token t = input.getToken(currentIndex);
-
-            if (t.type == Token.OPERATOR) {
-                indexOp = currentIndex;
-                currentIndex++;
-                next.initOp(t.str.charAt(0));
-                break;
-            } else if (t.type == Token.WHITESPACE) {
-                currentIndex++;
-            } else {
-                return -1;
-            }
+    private void placeValue(Value val) {
+        if (output == null) {
+            output = val;
         }
-
-        int indexRVal = -1;
-        while (currentIndex < input.numberTokens()) {
-            Token t = input.getToken(currentIndex);
-
-            if (t.type == Token.CONSTANT) {
-                indexRVal = currentIndex;
-                currentIndex++;
-                double v = Double.parseDouble(t.str);
-                next.initRVal(v);
-                break;
-            } else if (t.type == Token.IDENTIFIER) {
-                indexRVal = currentIndex;
-                currentIndex++;
-                next.initRVal(t.str);
-                break;
-            } else if (t.type == Token.WHITESPACE) {
-                currentIndex++;
-            } else {
-                return -1;
-            }
-        }
-
-        output.addNext(next);
-        return currentIndex;
     }
 
-    public int recParse(int fromIndex, BinaryOp parentOp, boolean first) {
-        int currentIndex = fromIndex;
+    private Token nextToken() {
+        while (currentIndex < input.numberTokens()) {
+            Token t = input.getToken(currentIndex);
+            currentIndex++;
 
-        // TODO: Find the L-Value, but only if (first).
-        int indexLVal = -1;
-        if (first) {
-            while (currentIndex < input.numberTokens()) {
-                Token t = input.getToken(currentIndex);
+            if (t.type != Token.WHITESPACE)
+                return t;
+        }
 
-                if (t.type == Token.CONSTANT) {
-                    indexLVal = currentIndex;
-                    currentIndex++;
-                    double v = Double.parseDouble(t.str);
-                    parentOp.initLVal(v);
+        return null;
+    }
+
+    private Value parseRec() {
+        Value val = null;
+
+        Token tokenL = nextToken();
+        if (tokenL == null)
+            return null;
+
+        if (tokenL.type == Token.CONSTANT) {
+            val = new Value(Double.parseDouble(tokenL.str));
+        } else {
+            return null;
+        }
+
+        while (currentIndex < input.numberTokens()) {
+            Token tokenO = nextToken();
+            Token tokenR = nextToken();
+            if (tokenO == null || tokenR == null)
+                return null;
+
+            BinaryOp newOp = new BinaryOp();
+            if (tokenO.type == Token.OPERATOR) {
+                newOp.initOp(tokenO.str.charAt(0));
+            } else {
+                return null;
+            }
+
+            if (tokenR.type == Token.CONSTANT) {
+                Value v = new Value(Double.parseDouble(tokenR.str));
+                newOp.initRVal(v);
+            } else {
+                return null;
+            }
+
+            Value tmpVal = val;
+            while (tmpVal.biOp != null) {
+                if (newOp.takesPrecedenceOver(tmpVal.biOp))
+                    tmpVal = tmpVal.biOp.r;
+                else
                     break;
-                } else if (t.type == Token.IDENTIFIER) {
-                    indexLVal = currentIndex;
-                    currentIndex++;
-                    parentOp.initLVal(t.str);
-                    break;
-                } else if (t.type == Token.WHITESPACE) {
-                    currentIndex++;
-                } else {
-                    return -1;
-                }
             }
+
+            Value newVal = new Value(newOp);
+            tmpVal.swap(newVal);
+            tmpVal.biOp.initLVal(newVal);
         }
 
-        // TODO: Find the Operator
-        int indexOp = -1;
-        while (currentIndex < input.numberTokens()) {
-            Token t = input.getToken(currentIndex);
-
-            if (t.type == Token.OPERATOR) {
-                indexOp = currentIndex;
-                currentIndex++;
-                parentOp.initOp(t.str.charAt(0));
-                break;
-            } else if (t.type == Token.WHITESPACE) {
-                currentIndex++;
-            } else {
-                return -1;
-            }
-        }
-
-        // TODO: Find the R-Value
-        int indexRVal = -1;
-        while (currentIndex < input.numberTokens()) {
-            Token t = input.getToken(currentIndex);
-
-            if (t.type == Token.CONSTANT) {
-                indexRVal = currentIndex;
-                currentIndex++;
-                double v = Double.parseDouble(t.str);
-                parentOp.initRVal(v);
-                break;
-            } else if (t.type == Token.IDENTIFIER) {
-                indexRVal = currentIndex;
-                currentIndex++;
-                parentOp.initRVal(t.str);
-                break;
-            } else if (t.type == Token.WHITESPACE) {
-                currentIndex++;
-            } else {
-                return -1;
-            }
-        }
-
-        while (currentIndex < input.numberTokens()) {
-            int nextIndex = nextOp(currentIndex);
-            currentIndex = nextIndex;
-        }
-
-        return currentIndex;
+        return val;
     }
 
-    int parse() {
-        return recParse(0, output, true);
+    public boolean parse() {
+        output = parseRec();
+        return (output != null);
     }
 }

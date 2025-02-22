@@ -25,7 +25,7 @@ public class BinaryOp {
     }
 
     private char o;
-    private Value l, r;
+    public Value l, r;
 
     public BinaryOp() {
         this.o = NULL;

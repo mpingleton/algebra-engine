@@ -5,23 +5,15 @@
 public class AlgebraEngineMain {
 
     public static void main(String[] args) {
-        System.out.println("Token parser");
-
-        Tokenizer t1 = new Tokenizer("2*3+4*5^2");
-        Tokenizer t2 = new Tokenizer("2+3*4+5");
+        Tokenizer t1 = new Tokenizer("2*3+4*5/2");
         t1.tokenize();
-        t2.tokenize();
         System.out.println(t1);
-        System.out.println(t2);
 
-        Parser parser1 = new Parser(t1);
-        parser1.parse();
-        System.out.println(parser1.output);
-        System.out.println(parser1.output.evaluate());
+        Parser p1 = new Parser(t1);
+        System.out.println(p1.parse());
+        System.out.println(p1.output);
 
-        Parser parser2 = new Parser(t2);
-        parser2.parse();
-        System.out.println(parser2.output);
-        System.out.println(parser2.output.evaluate());
+        VariableBundle vars = new VariableBundle();
+        System.out.println(p1.output.toValue(vars));
     }
 }

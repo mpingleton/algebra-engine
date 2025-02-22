@@ -40,41 +40,59 @@ public class Value {
         this.biOp = biOp;
     }
 
+    public void swap(Value other) {
+        boolean tmpInit = isCoeffInit;
+        double tmpCoeff = coeff;
+        String tmpName = name;
+        BinaryOp tmpBiOp = biOp;
+
+        isCoeffInit = other.isCoeffInit;
+        coeff = other.coeff;
+        name = other.name;
+        biOp = other.biOp;
+
+        other.isCoeffInit = tmpInit;
+        other.coeff = tmpCoeff;
+        other.name = tmpName;
+        other.biOp = tmpBiOp;
+    }
+
     public double toValue(VariableBundle vars) {
-        if (biOp == null) {
-            double val = 0.0;
-            if (!name.isEmpty()) {
-                val = vars.getValue(name);
-                if (Double.isNaN(val)) {
-                    return Double.NaN;
-                }
-                // TODO: How to deal with functions.
-            }
+        double val = 1.0;
+        if (biOp != null)
+            val *= biOp.evaluate(vars);
 
-            if (isCoeffInit) {
-                val *= coeff;
-            }
+        if (!name.isEmpty()) {
+            double v = vars.getValue(name);
+            if (Double.isNaN(v))
+                return Double.NaN;
 
-            return val;
-        } else {
-            return biOp.evaluate(vars);
+            val *= v;
         }
+
+        if (isCoeffInit)
+            val *= coeff;
+
+        return val;
     }
 
     @Override
     public String toString() {
-        if (biOp == null) {
-            String s = "";
+        String s = "";
 
-            if (isCoeffInit) {
-                s += Double.toString(coeff);
-            }
-
-            s += name;
-            return s;
-        } else {
-            return biOp.toString();
+        if (isCoeffInit) {
+            s += Double.toString(coeff);
         }
+
+        if (!name.isEmpty()) {
+            s += name;
+        }
+
+        if (biOp != null) {
+            s += biOp;
+        }
+
+        return s;
     }
 }
 
