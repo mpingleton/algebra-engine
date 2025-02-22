@@ -5,7 +5,7 @@
 public class AlgebraEngineMain {
 
     public static void main(String[] args) {
-        Tokenizer t1 = new Tokenizer("2*3+4*5/2");
+        Tokenizer t1 = new Tokenizer("2*3+4*5(2+(2+(1+1)))");
         t1.tokenize();
         System.out.println(t1);
 

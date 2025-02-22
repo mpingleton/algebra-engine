@@ -22,50 +22,84 @@ public class Parser {
         }
     }
 
-    private Token nextToken() {
+    private boolean nextToken() {
         while (currentIndex < input.numberTokens()) {
             Token t = input.getToken(currentIndex);
-            currentIndex++;
-
-            if (t.type != Token.WHITESPACE)
-                return t;
+            if (t.type == Token.WHITESPACE)
+                currentIndex++;
+            else
+                return true;
         }
 
-        return null;
+        return false;
+    }
+
+    private Value nextValue() {
+        if (currentIndex >= input.numberTokens())
+            return null;
+
+        Token t = input.getToken(currentIndex);
+        if (t.type != Token.CONSTANT && t.type != Token.IDENTIFIER && t.type != Token.DELIMITER)
+            return null;
+
+        Value val = new Value();
+
+        if (t.type == Token.CONSTANT) {
+            val.isCoeffInit = true;
+            val.coeff = Double.parseDouble(t.str);
+            currentIndex++;
+        }
+
+        if (!nextToken())
+            return val;
+
+        t = input.getToken(currentIndex);
+        if (t.type == Token.IDENTIFIER) {
+            val.name = t.str;
+            currentIndex++;
+        }
+
+        if (!nextToken())
+            return val;
+
+        t = input.getToken(currentIndex);
+        if (t.type == Token.DELIMITER && t.str.equals("(")) {
+            currentIndex++;
+            val.func = parseRec();
+        }
+
+        return val;
     }
 
     private Value parseRec() {
-        Value val = null;
-
-        Token tokenL = nextToken();
-        if (tokenL == null)
+        if (!nextToken())
             return null;
 
-        if (tokenL.type == Token.CONSTANT) {
-            val = new Value(Double.parseDouble(tokenL.str));
-        } else {
-            return null;
-        }
+        Value val = nextValue();
+        if (!nextToken())
+            return val;
 
         while (currentIndex < input.numberTokens()) {
-            Token tokenO = nextToken();
-            Token tokenR = nextToken();
-            if (tokenO == null || tokenR == null)
-                return null;
-
             BinaryOp newOp = new BinaryOp();
+            Token tokenO = input.getToken(currentIndex);
             if (tokenO.type == Token.OPERATOR) {
                 newOp.initOp(tokenO.str.charAt(0));
+                currentIndex++;
+            } else if (tokenO.type == Token.DELIMITER && tokenO.str.equals(")")) {
+                currentIndex++;
+                return val;
             } else {
                 return null;
             }
 
-            if (tokenR.type == Token.CONSTANT) {
-                Value v = new Value(Double.parseDouble(tokenR.str));
-                newOp.initRVal(v);
-            } else {
+            if (!nextToken())
                 return null;
-            }
+
+            Value valR = nextValue();
+            if (valR == null)
+                return null;
+
+            newOp.initRVal(valR);
 
             Value tmpVal = val;
             while (tmpVal.biOp != null) {
