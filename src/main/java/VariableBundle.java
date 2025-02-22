@@ -26,13 +26,13 @@ public class VariableBundle {
         variables.add(v);
     }
 
-    public float getValue(String name) {
+    public double getValue(String name) {
         for (int i = 0; i < variables.size(); i++) {
             if (variables.get(i).name.equals(name)) {
                 return variables.get(i).value;
             }
         }
 
-        return Float.NaN;
+        return Double.NaN;
     }
 }

@@ -23,7 +23,7 @@ public class Particle {
     protected int op;
     protected int valueType;
     protected String value;
-    protected float parsedValue;
+    protected double parsedValue;
     protected List<Expression> subExpressions;
 
     public Particle() {
@@ -50,9 +50,9 @@ public class Particle {
         Particle newParticle = new Particle(this);
 
         if (newParticle.valueType == VALUE_TYPE_VARIABLE) {
-            float value = bundle.getValue(newParticle.value);
+            double value = bundle.getValue(newParticle.value);
 
-            if (!Float.isNaN(value)) {
+            if (!Double.isNaN(value)) {
                 newParticle.valueType = VALUE_TYPE_CONSTANT;
                 newParticle.parsedValue = value;
                 newParticle.value = String.valueOf(value);
