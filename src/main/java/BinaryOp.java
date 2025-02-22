@@ -25,67 +25,38 @@ public class BinaryOp {
     }
 
     private char o;
-    private double lVal, rVal;
-    private BinaryOp lOp, rOp;
+    private Value l, r;
 
     public BinaryOp() {
         this.o = NULL;
-        this.lVal = Double.NaN;
-        this.rVal = Double.NaN;
-        this.lOp = null;
-        this.rOp = null;
+        this.l = null;
+        this.r = null;
     }
 
-    public BinaryOp(char opCode, double lValue, double rValue) {
+    public BinaryOp(char opCode) {
         this.o = opCode;
-        this.lVal = lValue;
-        this.rVal = rValue;
-        this.lOp = null;
-        this.rOp = null;
+        this.l = null;
+        this.r = null;
     }
 
-    public BinaryOp(char opCode, BinaryOp lValue, double rValue) {
+    public BinaryOp(Value lValue, char opCode, Value rValue) {
         this.o = opCode;
-        this.lVal = Double.NaN;
-        this.rVal = rValue;
-        this.lOp = lValue;
-        this.rOp = null;
-    }
-
-    public BinaryOp(char opCode, double lValue, BinaryOp rValue) {
-        this.o = opCode;
-        this.lVal = lValue;
-        this.rVal = Double.NaN;
-        this.lOp = null;
-        this.rOp = rValue;
-    }
-
-    public BinaryOp(char opCode, BinaryOp lValue, BinaryOp rValue) {
-        this.o = opCode;
-        this.lVal = Double.NaN;
-        this.rVal = Double.NaN;
-        this.lOp = lValue;
-        this.rOp = rValue;
+        this.l = lValue;
+        this.r = rValue;
     }
 
     public void swap(BinaryOp other) {
         char oTmp = this.o;
-        double lValTmp = this.lVal;
-        double rValTmp = this.rVal;
-        BinaryOp lOpTmp = this.lOp;
-        BinaryOp rOpTmp = this.rOp;
+        Value lTmp = this.l;
+        Value rTmp = this.r;
 
         this.o = other.o;
-        this.lVal = other.lVal;
-        this.rVal = other.rVal;
-        this.lOp = other.lOp;
-        this.rOp = other.rOp;
+        this.l = other.l;
+        this.r = other.r;
 
         other.o = oTmp;
-        other.lVal = lValTmp;
-        other.rVal = rValTmp;
-        other.lOp = lOpTmp;
-        other.rOp = rOpTmp;
+        other.l = lTmp;
+        other.r = rTmp;
     }
 
     public boolean takesPrecedenceOver(BinaryOp other) {
@@ -93,77 +64,41 @@ public class BinaryOp {
     }
 
     public void initLValueWithOtherRValue(BinaryOp other) {
-        this.lVal = other.rVal;
-        this.lOp = other.rOp;
-    }
-
-    public boolean isOpInitialized() {
-        return (o != NULL);
-    }
-
-    public boolean isLValInitialized() {
-        return !(lOp == null && Double.isNaN(lVal));
-    }
-
-    public boolean isRValInitialized() {
-        return !(rOp == null && Double.isNaN(rVal));
+        this.l = other.r;
     }
 
     public void initOp(char opCode) {
         o = opCode;
     }
 
-    public void initLVal(double lValue) {
-        lVal = lValue;
-        lOp = null;
+    public void initLVal(Value lValue) {
+        l = lValue;
     }
 
-    public void initLVal(String lValue) {
-        // TODO
-
-        lVal = 1.0; // This is temporary
-    }
-
-    public void initLVal(BinaryOp lValue) {
-        lVal = Double.NaN;
-        lOp = lValue;
-    }
-
-    public void initRVal(double rValue) {
-        rVal = rValue;
-        rOp = null;
-    }
-
-    public void initRVal(String rValue) {
-        // TODO
-
-        rVal = 1.0; // This is temporary.
-    }
-
-    public void initRVal(BinaryOp rValue) {
-        rVal = Double.NaN;
-        rOp = rValue;
+    public void initRVal(Value rValue) {
+        r = rValue;
     }
 
     public void addNext(BinaryOp next) {
         if (next.takesPrecedenceOver(this)) {
-            if (rOp == null) {
+            if (r == null) {
                 next.initLValueWithOtherRValue(this);
-                initRVal(next);
+                initRVal(new Value(next));
             } else {
-                rOp.addNext(next);
+                r.biOp.addNext(next);
             }
         } else {
             swap(next);
-            initLVal(next);
+            initLVal(new Value(next));
         }
     }
 
-    public double evaluate() {
-        if (lOp != null)
-            lVal = lOp.evaluate();
-        if (rOp != null)
-            rVal = rOp.evaluate();
+    public double evaluate(VariableBundle vars) {
+        if (l == null || r == null)
+            return Double.NaN;
+
+        double lVal = l.toValue(vars);
+        double rVal = r.toValue(vars);
 
         return switch (o) {
             case ADD -> lVal + rVal;
@@ -180,17 +115,13 @@ public class BinaryOp {
     public String toString() {
         String tmp = "";
 
-        if (lOp == null)
-            tmp += lVal;
-        else
-            tmp += lOp.toString();
+        if (l != null)
+            tmp += l.toString();
 
         tmp += o;
 
-        if (rOp == null)
-            tmp += rVal;
-        else
-            tmp += rOp.toString();
+        if (r != null)
+            tmp += r.toString();
 
         return tmp;
     }

@@ -57,7 +57,7 @@ public class Value {
 
             return val;
         } else {
-            return biOp.evaluate(); // TODO: Figure out how to pass the variable bundle here.
+            return biOp.evaluate(vars);
         }
     }
 
