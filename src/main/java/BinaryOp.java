@@ -10,6 +10,8 @@ public class BinaryOp {
     public static final char MOD = '%';
     public static final char POW = '^';
     public static final char EQU = '=';
+    public static final char LT = '<';
+    public static final char GT = '>';
 
     public static int operatorPrecedence(char op) {
         if (op == EQU)
