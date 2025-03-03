@@ -54,5 +54,11 @@ public class AlgebraEngineMain {
 
         vars.setValue("x", 4);
         System.out.println(p2.output.toValue(vars));
+
+        Point2D point1 = new Point2D(3, 1);
+        System.out.println(point1);
+
+        Point3D point2 = new Point3D(3, 1, 2);
+        System.out.println(point2);
     }
 }
