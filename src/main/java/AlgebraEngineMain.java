@@ -6,6 +6,15 @@ import functions.*;
 
 public class AlgebraEngineMain {
 
+    // General TODOs.
+    // TODO: Equivalence. (=, >=, <=)
+    // TODO: Multiple solutions.
+    // TODO: Points (Both 2D and 3D).
+    // TODO: Graphs (Both 2D and 3D?).
+    // TODO: Imaginary numbers? (Later maybe?)
+    // TODO: Point analyzers (linear and quadratic regression).
+    // TODO: Graph analyzers (intersections, plot points, min/max, find axis crossings)
+
     public static void main(String[] args) {
         Tokenizer t1 = new Tokenizer("2*3+4*5(2+(2+(1+1)))");
         t1.tokenize();
