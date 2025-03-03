@@ -12,7 +12,7 @@ public class Area2D {
 
     @Override
     public String toString() {
-        String tmp = "Area2D: \n";
+        String tmp = "Area2D:\n";
 
         tmp += "X: (" + xMin + "-" + xMax + ")\n";
         tmp += "Y: (" + yMin + "-" + yMax + ")\n";

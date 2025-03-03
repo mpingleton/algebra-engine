@@ -15,7 +15,7 @@ public class Area3D {
 
     @Override
     public String toString() {
-        String tmp = "Area3D: \n";
+        String tmp = "Area3D:\n";
 
         tmp += "X: (" + xMin + "-" + xMax + ")\n";
         tmp += "Y: (" + yMin + "-" + yMax + ")\n";
