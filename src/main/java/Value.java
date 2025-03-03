@@ -1,3 +1,6 @@
+import functions.Function;
+import functions.FunctionSelector;
+
 public class Value {
 
     public boolean isCoeffInit;
@@ -5,6 +8,7 @@ public class Value {
     public String name;
     public Value func;
     public BinaryOp biOp;
+    public Function funcExec;
 
     public Value() {
         this.isCoeffInit = false;
@@ -12,6 +16,7 @@ public class Value {
         this.name = "";
         this.func = null;
         this.biOp = null;
+        this.funcExec = null;
     }
 
     public Value(double coeff) {
@@ -20,6 +25,7 @@ public class Value {
         this.name = "";
         this.func = null;
         this.biOp = null;
+        this.funcExec = null;
     }
 
     public Value(String name) {
@@ -28,6 +34,7 @@ public class Value {
         this.name = name;
         this.func = null;
         this.biOp = null;
+        this.funcExec = null;
     }
 
     public Value(double coeff, String name) {
@@ -36,6 +43,7 @@ public class Value {
         this.name = name;
         this.func = null;
         this.biOp = null;
+        this.funcExec = null;
     }
 
     public Value(BinaryOp biOp) {
@@ -44,6 +52,7 @@ public class Value {
         this.name = "";
         this.func = null;
         this.biOp = biOp;
+        this.funcExec = null;
     }
 
     public void swap(Value other) {
@@ -52,18 +61,22 @@ public class Value {
         String tmpName = name;
         BinaryOp tmpBiOp = biOp;
         Value tmpFunc = func;
+        Function tmpFuncExec = funcExec;
 
         isCoeffInit = other.isCoeffInit;
         coeff = other.coeff;
         name = other.name;
         biOp = other.biOp;
-        tmpFunc = other.func;
+        func = other.func;
+        funcExec = other.funcExec;
+
 
         other.isCoeffInit = tmpInit;
         other.coeff = tmpCoeff;
         other.name = tmpName;
         other.biOp = tmpBiOp;
         other.func = tmpFunc;
+        other.funcExec = tmpFuncExec;
     }
 
     public double toValue(VariableBundle vars) {
@@ -73,13 +86,21 @@ public class Value {
 
         double val = 1.0;
         if (!name.isEmpty()) {
-            double v = vars.getValue(name);
-            if (!Double.isNaN(v))
-                val *= v;
+            FunctionSelector fs = new FunctionSelector();
+            funcExec = fs.getFunction(FunctionSelector.RAD, name);
+            if (funcExec == null) {
+                double v = vars.getValue(name);
+                if (!Double.isNaN(v)) // TODO: Need a way to figure out for sure whether or not a variable exists.
+                    val *= v;
+            }
         }
-        // TODO: Figure out if this.name is a variable or a function name.
-        if (func != null)
-            val *= func.toValue(vars);
+
+        if (func != null) {
+            if (funcExec != null)
+                val *= funcExec.execute(func.toValue(vars));
+            else
+                val *= func.toValue(vars);
+        }
 
         if (isCoeffInit)
             val *= coeff;

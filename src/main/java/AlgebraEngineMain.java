@@ -34,5 +34,16 @@ public class AlgebraEngineMain {
         System.out.println("sqrt(" + x2 + ")=" + fSqt.execute(x2));
         System.out.println("cbrt(" + x1 + ")=" + fCbt.execute(x1));
         System.out.println("cbrt(" + x2 + ")=" + fCbt.execute(x2));
+
+        Tokenizer t2 = new Tokenizer("x(2.5*2)");
+        t2.tokenize();
+        System.out.println(t2);
+
+        Parser p2 = new Parser(t2);
+        System.out.println(p2.parse());
+        System.out.println(p2.output);
+
+        vars.setValue("x", 4);
+        System.out.println(p2.output.toValue(vars));
     }
 }
