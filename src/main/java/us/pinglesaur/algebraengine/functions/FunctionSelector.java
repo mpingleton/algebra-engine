@@ -1,4 +1,4 @@
-package functions;
+package us.pinglesaur.algebraengine.functions;
 
 import java.util.ArrayList;
 

@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.equations;
+
 import java.util.ArrayList;
 
 public class Tokenizer {

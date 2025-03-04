@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.graphing;
+
 import java.util.ArrayList;
 
 public class Graph2D {

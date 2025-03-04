@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.equations;
+
 public class Parser {
 
     private int currentIndex;

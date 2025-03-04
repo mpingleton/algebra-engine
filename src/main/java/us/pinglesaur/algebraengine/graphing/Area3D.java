@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.graphing;
+
 public class Area3D {
 
     public double xMin, xMax;

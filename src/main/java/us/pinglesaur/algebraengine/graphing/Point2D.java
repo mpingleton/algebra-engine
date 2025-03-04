@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.graphing;
+
 public class Point2D {
 
     public double x, y;

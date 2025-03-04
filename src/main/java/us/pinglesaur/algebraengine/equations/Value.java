@@ -1,5 +1,7 @@
-import functions.Function;
-import functions.FunctionSelector;
+package us.pinglesaur.algebraengine.equations;
+
+import us.pinglesaur.algebraengine.functions.Function;
+import us.pinglesaur.algebraengine.functions.FunctionSelector;
 
 public class Value {
 

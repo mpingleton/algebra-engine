@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.equations;
+
 /*
  * Created 24-Jul-2024
  */

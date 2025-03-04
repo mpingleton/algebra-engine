@@ -1,4 +1,4 @@
-
+package us.pinglesaur.algebraengine.equations;
 
 public class BinaryOp {
 

@@ -1,3 +1,7 @@
+package us.pinglesaur.algebraengine.graphing;
+
+import us.pinglesaur.algebraengine.equations.BinaryOp;
+
 import java.util.ArrayList;
 
 public class GraphEquation2D {

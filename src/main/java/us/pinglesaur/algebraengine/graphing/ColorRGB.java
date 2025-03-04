@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.graphing;
+
 public class ColorRGB {
 
     private float r, g, b;

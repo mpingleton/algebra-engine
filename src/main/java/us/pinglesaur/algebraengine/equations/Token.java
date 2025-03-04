@@ -1,3 +1,5 @@
+package us.pinglesaur.algebraengine.equations;
+
 public class Token {
 
     public static final int NULL = 0;

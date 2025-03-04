@@ -1,4 +1,4 @@
-package functions;
+package us.pinglesaur.algebraengine.functions;
 
 public class Cbrt extends Function {
 

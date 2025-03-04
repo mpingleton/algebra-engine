@@ -1,8 +1,14 @@
-/*
+package us.pinglesaur.algebraengine;/*
  * Created 23-Jul-2024
  */
 
-import functions.*;
+import us.pinglesaur.algebraengine.equations.Parser;
+import us.pinglesaur.algebraengine.equations.Tokenizer;
+import us.pinglesaur.algebraengine.equations.VariableBundle;
+import us.pinglesaur.algebraengine.functions.Function;
+import us.pinglesaur.algebraengine.functions.FunctionSelector;
+import us.pinglesaur.algebraengine.graphing.Point2D;
+import us.pinglesaur.algebraengine.graphing.Point3D;
 
 public class AlgebraEngineMain {
 
