@@ -69,7 +69,34 @@ public class ValueTest {
 
     @Test
     void swapTest() {
-        // TODO
+        Value valA = new Value();
+        valA.type = Value.TYPE_CONSTANT;
+        valA.isImaginary = true;
+        valA.isNegative = false;
+        valA.isCoeffInit = true;
+        valA.coeff = 3.14159;
+        valA.name = "";
+
+        Value valB = new Value();
+        valB.type = Value.TYPE_VARIABLE;
+        valB.isImaginary = false;
+        valB.isNegative = true;
+        valB.isCoeffInit = false;
+        valB.name = "x";
+
+        valA.swap(valB);
+
+        assertEquals(Value.TYPE_VARIABLE, valA.type);
+        assert(!valA.isImaginary);
+        assert(valA.isNegative);
+        assert(!valA.isCoeffInit);
+        assert(Double.isNaN(valA.coeff));
+
+        assertEquals(Value.TYPE_CONSTANT, valB.type);
+        assert(valB.isImaginary);
+        assert(!valB.isNegative);
+        assert(valB.isCoeffInit);
+        assertEquals(3.14159, valB.coeff);
     }
 
     @Test
