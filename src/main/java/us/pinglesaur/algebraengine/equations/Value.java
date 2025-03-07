@@ -173,7 +173,7 @@ public class Value {
     }
 
     public double getConstant() {
-        if (type != TYPE_CONSTANT || !isCoeffInit || isImaginary)
+        if (type != TYPE_CONSTANT || !isCoeffInit)
             return Double.NaN;
 
         if (isNegative)
