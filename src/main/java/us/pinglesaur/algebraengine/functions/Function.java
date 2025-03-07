@@ -18,11 +18,11 @@ public class Function {
         return "";
     }
 
-    public Value[] forwardExecute(Value input, double rangeMin, double rangeMax) {
+    public Value[] forwardExecute(Value[] input, double rangeMin, double rangeMax) {
         return null;
     }
 
-    public Value[] reverseExecute(Value input, double rangeMin, double rangeMax) {
+    public Value[] reverseExecute(Value[] input, double rangeMin, double rangeMax) {
         return null;
     }
 }

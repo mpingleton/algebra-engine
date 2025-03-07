@@ -15,7 +15,8 @@ public class FunctionTest {
     @Test
     void testForwardExecute() {
         VariableBundle bundle = new VariableBundle();
-        Value v1 = new Value(3.14159);
+        Value[] v1 = new Value[1];
+        v1[0] = new Value(3.14159);
 
         Function f1 = new Function();
         Value[] o1 = f1.forwardExecute(v1, -100, 100);
@@ -25,7 +26,8 @@ public class FunctionTest {
     @Test
     void testReverseExecute() {
         VariableBundle bundle = new VariableBundle();
-        Value v1 = new Value(3.14159);
+        Value[] v1 = new Value[1];
+        v1[0] = new Value(3.14159);
 
         Function f1 = new Function();
         Value[] o1 = f1.reverseExecute(v1, -100, 100);
