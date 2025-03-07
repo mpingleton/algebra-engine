@@ -95,22 +95,35 @@ public class BinaryOp {
         }
     }
 
-    public double evaluate(VariableBundle vars) {
+    public Value[] evaluate(VariableBundle vars) {
         if (l == null || r == null)
-            return Double.NaN;
+            return null;
 
-        double lVal = l.toValue(vars);
-        double rVal = r.toValue(vars);
+        Value[] lVal = l.calculate(vars);
+        Value[] rVal = r.calculate(vars);
 
-        return switch (o) {
-            case ADD -> lVal + rVal;
-            case SUB -> lVal - rVal;
-            case MUL -> lVal * rVal;
-            case DIV -> lVal / rVal;
-            case MOD -> lVal % rVal;
-            case POW -> Math.pow(lVal, rVal);
-            default -> Double.NaN;
-        };
+        int solutions = lVal.length * rVal.length;
+        Value[] oVal = new Value[solutions];
+
+        for (int l = 0; l < lVal.length; l++) {
+            for (int r = 0; r < rVal.length; r++) {
+                int oo = lVal.length * l + r;
+                // TODO: Deal with other than constants.
+                double d = switch (o) {
+                    case ADD -> lVal[l].getConstant() + rVal[r].getConstant();
+                    case SUB -> lVal[l].getConstant() - rVal[r].getConstant();
+                    case MUL -> lVal[l].getConstant() * rVal[r].getConstant();
+                    case DIV -> lVal[l].getConstant() / rVal[r].getConstant();
+                    case MOD -> lVal[l].getConstant() % rVal[r].getConstant();
+                    case POW -> Math.pow(lVal[l].getConstant(), rVal[r].getConstant());
+                    default -> Double.NaN;
+                };
+
+                oVal[oo] = new Value(d);
+            }
+        }
+
+        return oVal;
     }
 
     @Override
