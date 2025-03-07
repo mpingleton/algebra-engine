@@ -15,7 +15,7 @@ public class VariableBundle {
         variables = new ArrayList<>();
     }
 
-    public void setValue(String name, float value) {
+    public void setValue(String name, double value) {
         for (int i = 0; i < variables.size(); i++) {
             if (variables.get(i).name.equals(name)) {
                 variables.get(i).value = value;
