@@ -81,20 +81,6 @@ public class BinaryOp {
         r = rValue;
     }
 
-    public void addNext(BinaryOp next) {
-        if (next.takesPrecedenceOver(this)) {
-            if (r == null) {
-                next.initLValueWithOtherRValue(this);
-                initRVal(new Value(next));
-            } else {
-                r.biOp.addNext(next);
-            }
-        } else {
-            swap(next);
-            initLVal(new Value(next));
-        }
-    }
-
     public Value[] evaluate(VariableBundle vars) {
         if (l == null || r == null)
             return null;
