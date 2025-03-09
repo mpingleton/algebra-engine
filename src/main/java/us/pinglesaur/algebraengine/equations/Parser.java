@@ -1,5 +1,7 @@
 package us.pinglesaur.algebraengine.equations;
 
+import java.util.ArrayList;
+
 public class Parser {
 
     private int currentIndex;
@@ -18,109 +20,152 @@ public class Parser {
         this.output = null;
     }
 
-    private void placeValue(Value val) {
-        if (output == null) {
-            output = val;
-        }
+    private boolean end() {
+        return !(currentIndex < input.numberTokens());
     }
 
-    private boolean nextToken() {
+    public void takeWhitespace() {
         while (currentIndex < input.numberTokens()) {
             Token t = input.getToken(currentIndex);
-            if (t.type == Token.WHITESPACE)
-                currentIndex++;
-            else
-                return true;
-        }
+            if (t.type != Token.WHITESPACE)
+                break;
 
-        return false;
+            currentIndex++;
+        }
     }
 
-    private Value nextValue() {
-        if (currentIndex >= input.numberTokens())
-            return null;
+    public void nextValue(Value value) {
+        if (value == null)
+            return;
 
-        Token t = input.getToken(currentIndex);
-        if (t.type != Token.CONSTANT && t.type != Token.IDENTIFIER && t.type != Token.DELIMITER)
-            return null;
+        takeWhitespace();
+        if (end())
+            return;
 
-        Value val = new Value();
+        // TODO: coefficient
+        Token tokenCoeff = input.getToken(currentIndex);
+        if (tokenCoeff == null)
+            return;
+        else if (tokenCoeff.type == Token.CONSTANT) {
+            value.type = Value.TYPE_CONSTANT;
+            value.isCoeffInit = true;
+            value.coeff = Double.parseDouble(tokenCoeff.str);
 
-        if (t.type == Token.CONSTANT) {
-            val.isCoeffInit = true;
-            val.coeff = Double.parseDouble(t.str);
             currentIndex++;
         }
 
-        if (!nextToken())
-            return val;
+        if (end())
+            return;
 
-        t = input.getToken(currentIndex);
-        if (t.type == Token.IDENTIFIER) {
-            val.name = t.str;
+        // TODO: identifier
+        Token tokenIdent = input.getToken(currentIndex);
+        if (tokenIdent == null)
+            return;
+        else if (tokenIdent.type == Token.IDENTIFIER) {
+            value.type = Value.TYPE_VARIABLE;
+            value.name = tokenIdent.str;
+
             currentIndex++;
         }
 
-        if (!nextToken())
-            return val;
+        if (end())
+            return;
 
-        t = input.getToken(currentIndex);
-        if (t.type == Token.DELIMITER && t.str.equals("(")) {
+        // TODO: parentheses opening
+        Token tokenFuncOpen = input.getToken(currentIndex);
+        if (tokenFuncOpen == null)
+            return;
+        else if (tokenFuncOpen.type == Token.DELIMITER && tokenFuncOpen.str.equals("(")) {
+            value.type = Value.TYPE_FUNCTION;
             currentIndex++;
-            val.func = parseRec();
+        } else return;
+
+        // TODO: recursive call.
+        ArrayList<Value> recVals = new ArrayList<>();
+        while (!end()) {
+            takeWhitespace();
+            if (end()) break;
+
+            Token tokenDelimiter = input.getToken(currentIndex);
+            if (tokenDelimiter.type == Token.DELIMITER) {
+                if (tokenDelimiter.str.equals(",")) {
+                    currentIndex++;
+                } else if (tokenDelimiter.str.equals(")")) {
+                    currentIndex++;
+                    break;
+                }
+            }
+
+            Value recVal = new Value();
+            parseRec(recVal);
+            recVals.add(recVal);
         }
 
-        return val;
+        if (!recVals.isEmpty()) {
+            Value[] arr = new Value[recVals.size()];
+            arr = recVals.toArray(arr);
+            value.func = arr;
+        }
     }
 
-    private Value parseRec() {
-        if (!nextToken())
-            return null;
+    private void addBiOp(Value value, BinaryOp biOp) {
+        if (value == null || biOp == null)
+            return;
 
-        Value val = nextValue();
-        if (!nextToken())
-            return val;
+        Value tmpVal = value;
+        while (tmpVal.type == Value.TYPE_BINARY_OP) {
+            if (!biOp.takesPrecedenceOver(tmpVal.biOp)) {
+                break;
+            }
+
+            tmpVal = tmpVal.biOp.r;
+        }
+
+        Value lVal = new Value(biOp);
+        lVal.swap(tmpVal);
+        tmpVal.biOp.initLVal(lVal);
+    }
+
+    public void parseRec(Value value) {
+        if (value == null)
+            return;
+        else if (value.type != Value.TYPE_NULL)
+            return;
+
+        nextValue(value);
+        if (end()) return;
 
         while (currentIndex < input.numberTokens()) {
+            takeWhitespace();
+            if (end()) break;
+
+            // TODO: Operator
             BinaryOp newOp = new BinaryOp();
-            Token tokenO = input.getToken(currentIndex);
-            if (tokenO.type == Token.OPERATOR) {
-                newOp.initOp(tokenO.str.charAt(0));
+            Token tOp = input.getToken(currentIndex);
+            if (tOp.type == Token.OPERATOR) {
+                newOp.initOp(tOp.str.charAt(0));
                 currentIndex++;
-            } else if (tokenO.type == Token.DELIMITER && tokenO.str.equals(")")) {
-                currentIndex++;
-                return val;
-            } else {
-                return null;
+            } else if (tOp.type == Token.DELIMITER) {
+                break;
             }
 
-            if (!nextToken())
-                return null;
+            takeWhitespace();
+            if (end()) break;
 
-            Value valR = nextValue();
-            if (valR == null)
-                return null;
+            // TODO: r-value
+            Value rVal = new Value();
+            nextValue(rVal);
+            newOp.initRVal(rVal);
 
-            newOp.initRVal(valR);
-
-            Value tmpVal = val;
-            while (tmpVal.biOp != null) {
-                if (newOp.takesPrecedenceOver(tmpVal.biOp))
-                    tmpVal = tmpVal.biOp.r;
-                else
-                    break;
-            }
-
-            Value newVal = new Value(newOp);
-            tmpVal.swap(newVal);
-            tmpVal.biOp.initLVal(newVal);
+            addBiOp(value, newOp);
         }
-
-        return val;
     }
 
-    public boolean parse() {
-        output = parseRec();
-        return (output != null);
+    public int parse() {
+        output = new Value();
+        currentIndex = 0;
+        parseRec(output);
+
+        return currentIndex;
     }
 }
