@@ -47,4 +47,24 @@ public class BinaryOpTest {
         assert(opF.takesPrecedenceOver(opC));
         assert(!opC.takesPrecedenceOver(opF));
     }
+
+    @Test
+    void testInitOp() {
+        Value v1 = new Value(2);
+        Value v2 = new Value(3);
+        BinaryOp op = new BinaryOp();
+
+        op.initOp(BinaryOp.ADD);
+
+        op.initLVal(v1);
+        assert(op.l != null);
+        assert(op.r == null);
+
+        op.initRVal(v2);
+        assert(op.l != null);
+        assert(op.r != null);
+
+        assert(op.l == v1);
+        assert(op.r == v2);
+    }
 }
