@@ -29,4 +29,22 @@ public class BinaryOpTest {
         assertEquals(Value.TYPE_VARIABLE, opB.l.type);
         assertEquals(Value.TYPE_VARIABLE, opB.r.type);
     }
+
+    @Test
+    void testTakesPrecedenceOver() {
+        BinaryOp opA = new BinaryOp(new Value(3, "x"), BinaryOp.ADD, new Value(4, "x"));
+        BinaryOp opB = new BinaryOp(new Value(3, "x"), BinaryOp.ADD, new Value(4));
+        BinaryOp opC = new BinaryOp(new Value(3, "x"), BinaryOp.SUB, new Value(5));
+        BinaryOp opD = new BinaryOp(new Value(3, "x"), BinaryOp.MUL, new Value(6));
+        BinaryOp opE = new BinaryOp(new Value(3, "x"), BinaryOp.DIV, new Value(7));
+        BinaryOp opF = new BinaryOp(new Value(3.141), BinaryOp.POW, new Value(8));
+
+        assert(!opA.takesPrecedenceOver(opB));
+        assert(!opC.takesPrecedenceOver(opD));
+        assert(opD.takesPrecedenceOver(opC));
+        assert(opF.takesPrecedenceOver(opE));
+        assert(!opE.takesPrecedenceOver(opF));
+        assert(opF.takesPrecedenceOver(opC));
+        assert(!opC.takesPrecedenceOver(opF));
+    }
 }
