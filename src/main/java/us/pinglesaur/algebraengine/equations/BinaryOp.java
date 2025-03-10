@@ -65,10 +65,6 @@ public class BinaryOp {
         return (operatorPrecedence(o) > operatorPrecedence(other.o));
     }
 
-    public void initLValueWithOtherRValue(BinaryOp other) {
-        this.l = other.r;
-    }
-
     public void initOp(char opCode) {
         o = opCode;
     }
