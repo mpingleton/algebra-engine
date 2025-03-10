@@ -43,7 +43,18 @@ public class Abs extends Function {
             return null;
 
         double c = input[0].getConstant();
-        if (c > 0) {
+        if (c == 0) {
+            Value[] v = new Value[1];
+
+            v[0] = new Value();
+            v[0].type = Value.TYPE_CONSTANT;
+            v[0].isNegative = false;
+            v[0].isImaginary = false;
+            v[0].isCoeffInit = true;
+            v[0].coeff = 0.0;
+
+            return v;
+        } else if (c > 0) {
             Value[] v = new Value[2];
 
             v[0] = new Value();
