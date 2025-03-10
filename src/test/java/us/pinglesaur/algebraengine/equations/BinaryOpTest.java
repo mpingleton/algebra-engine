@@ -67,4 +67,17 @@ public class BinaryOpTest {
         assert(op.l == v1);
         assert(op.r == v2);
     }
+
+    @Test
+    void testToString() {
+        BinaryOp op1 = new BinaryOp(new Value(3, "x"), BinaryOp.ADD, new Value(2));
+        BinaryOp op2 = new BinaryOp(new Value(5), BinaryOp.POW, new Value(2));
+
+        assert(op1.toString().equals("3.0x+2.0"));
+        assert(op2.toString().equals("5.0^2.0"));
+
+        BinaryOp op3 = new BinaryOp(new Value(op1), BinaryOp.MUL, new Value(op2));
+
+        assert(op3.toString().equals("3.0x+2.0*5.0^2.0"));
+    }
 }
