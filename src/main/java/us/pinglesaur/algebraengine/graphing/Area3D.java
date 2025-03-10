@@ -15,13 +15,24 @@ public class Area3D {
         this.zMax = 0.0;
     }
 
+    public Area3D(double left, double right, double bottom, double top, double front, double back) {
+        this.xMin = left;
+        this.xMax = right;
+        this.yMin = bottom;
+        this.yMax = top;
+        this.zMin = front;
+        this.zMax = back;
+    }
+
     @Override
     public String toString() {
-        String tmp = "Area3D:\n";
+        String tmp = "Area3D: ";
 
-        tmp += "X: (" + xMin + "-" + xMax + ")\n";
-        tmp += "Y: (" + yMin + "-" + yMax + ")\n";
-        tmp += "Z: (" + zMin + "-" + zMax + ")\n";
+        tmp += "X=(" + xMin + "-" + xMax + ")";
+        tmp += "; ";
+        tmp += "Y=(" + yMin + "-" + yMax + ")";
+        tmp += "; ";
+        tmp += "Z=(" + zMin + "-" + zMax + ")";
 
         return tmp;
     }
