@@ -69,6 +69,30 @@ public class BinaryOpTest {
     }
 
     @Test
+    void testEvaluate1() {
+        VariableBundle vars = new VariableBundle();
+        vars.setValue("x", 3);
+
+        BinaryOp op1 = new BinaryOp(new Value(3), BinaryOp.MUL, new Value(2));
+        Value[] v1 = op1.evaluate(vars);
+        assertEquals(1, v1.length);
+        assertEquals(Value.TYPE_CONSTANT, v1[0].type);
+        assertEquals(6, v1[0].coeff);
+
+        BinaryOp op2 = new BinaryOp(new Value(6), BinaryOp.ADD, new Value(2, "x"));
+        Value[] v2 = op2.evaluate(vars);
+        assertEquals(1, v2.length);
+        assertEquals(Value.TYPE_CONSTANT, v2[0].type);
+        assertEquals(12, v2[0].coeff);
+
+        BinaryOp op3 = new BinaryOp(new Value(op1), BinaryOp.MUL, new Value(op2));
+        Value[] v3 = op3.evaluate(vars);
+        assertEquals(1, v3.length);
+        assertEquals(Value.TYPE_CONSTANT, v3[0].type);
+        assertEquals(72, v3[0].coeff);
+    }
+
+    @Test
     void testToString() {
         BinaryOp op1 = new BinaryOp(new Value(3, "x"), BinaryOp.ADD, new Value(2));
         BinaryOp op2 = new BinaryOp(new Value(5), BinaryOp.POW, new Value(2));
