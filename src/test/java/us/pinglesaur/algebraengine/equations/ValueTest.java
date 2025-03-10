@@ -178,7 +178,7 @@ public class ValueTest {
 
         Value v4 = new Value(-3.141);
         v4.isImaginary = true;
-        assert(Double.isNaN(v4.getConstant()));
+        assertEquals(-3.141, v4.getConstant());
     }
 
     @Test
