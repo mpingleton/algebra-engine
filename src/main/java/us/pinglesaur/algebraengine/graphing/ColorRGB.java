@@ -4,6 +4,12 @@ public class ColorRGB {
 
     private float r, g, b;
 
+    public ColorRGB() {
+        this.r = 0.0f;
+        this.g = 0.0f;
+        this.b = 0.0f;
+    }
+
     public ColorRGB(float red, float green, float blue) {
         this.r = red;
         this.g = green;
@@ -12,11 +18,13 @@ public class ColorRGB {
 
     @Override
     public String toString() {
-        String tmp = "ColorRGB\n";
+        String tmp = "ColorRGB: ";
 
-        tmp += "R: " + r + "\n";
-        tmp += "G: " + g + "\n";
-        tmp += "B: " + b + "\n";
+        tmp += "R=" + r;
+        tmp += "; ";
+        tmp += "G=" + g;
+        tmp += "; ";
+        tmp += "B=" + b;
 
         return tmp;
     }
