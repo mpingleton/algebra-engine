@@ -25,6 +25,12 @@ public class Path3D {
         return x.size();
     }
 
+    public void add(double inX, double inY, double inZ) {
+        x.add(inX);
+        y.add(inY);
+        z.add(inZ);
+    }
+
     public double getX(int n) {
         return x.get(n);
     }
@@ -39,8 +45,9 @@ public class Path3D {
 
     @Override
     public String toString() {
-        String tmp = "Path3D\n";
-        tmp += "Size: " + size() + "\n";
+        String tmp = "Path3D: ";
+
+        tmp += "Size=" + size();
 
         return tmp;
     }

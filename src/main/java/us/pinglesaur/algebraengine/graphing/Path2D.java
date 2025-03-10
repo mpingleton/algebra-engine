@@ -21,6 +21,11 @@ public class Path2D {
         return x.size();
     }
 
+    public void add(double inX, double inY) {
+        x.add(inX);
+        y.add(inY);
+    }
+
     public double getX(int n) {
         return x.get(n);
     }
@@ -31,8 +36,9 @@ public class Path2D {
 
     @Override
     public String toString() {
-        String tmp = "Path2D\n";
-        tmp += "Size: " + size() + "\n";
+        String tmp = "Path2D: ";
+
+        tmp += "Size=" + size();
 
         return tmp;
     }
