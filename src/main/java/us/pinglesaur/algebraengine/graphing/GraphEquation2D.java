@@ -1,16 +1,18 @@
 package us.pinglesaur.algebraengine.graphing;
 
-import us.pinglesaur.algebraengine.equations.BinaryOp;
+import us.pinglesaur.algebraengine.equations.Parser;
+import us.pinglesaur.algebraengine.equations.Tokenizer;
+import us.pinglesaur.algebraengine.equations.Value;
 
 import java.util.ArrayList;
 
 public class GraphEquation2D {
 
-    private String label;
-    private String equation;
-    private ColorRGB color;
+    public String label;
+    public String equation;
+    public ColorRGB color;
     private Area2D area;
-    private BinaryOp op;
+    private Value value;
     private ArrayList<Path2D> graphPaths;
 
     public GraphEquation2D() {
@@ -18,24 +20,52 @@ public class GraphEquation2D {
         this.equation = "";
         this.color = new ColorRGB(0, 1, 0);
         this.area = new Area2D();
-        this.op = new BinaryOp();
+        this.value = null;
         this.graphPaths = new ArrayList<>();
     }
 
-    // TODO: Parse the equation.
+    public void setEquation(String inputEquation) {
+        equation = inputEquation;
 
-    // TODO: Run the equation to create the paths.
+        Tokenizer tokenizer = new Tokenizer(equation);
+        tokenizer.tokenize();
+
+        Parser parser = new Parser(tokenizer);
+        if (parser.parse() < 0)
+            return;
+
+        value = parser.output;
+        graphPaths.clear();
+    }
+
+    public void setArea(Area2D inputArea) {
+        area = inputArea;
+    }
+
+    public void calculateGraph() {
+        graphPaths.clear();
+        if (value == null)
+            return;
+
+        // TODO
+    }
+
+    public Path2D[] getPaths() {
+        Path2D[] arr = new Path2D[graphPaths.size()];
+        graphPaths.toArray(arr);
+
+        return arr;
+    }
 
     @Override
     public String toString() {
-        String tmp = "GraphEquation2D\n";
+        String tmp = "GraphEquation2D: ";
 
-        tmp += "Label: " + label + "\n";
-        tmp += "Equation: " + equation + "\n";
-        tmp += color.toString();
-        tmp += area.toString();
-        tmp += "Parsed op: " + op.toString();
-        tmp += "Number of paths: " + graphPaths.size() + "\n";
+        tmp += "Label=\"" + label;
+        tmp += "\"; ";
+        tmp += "Equation=\"" + equation;
+        tmp += "\"; ";
+        tmp += "Graph Color=(" + color.toString() + ")";
 
         return tmp;
     }
